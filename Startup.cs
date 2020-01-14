@@ -1,4 +1,9 @@
+using GraphQL;
+using GraphQL.Server;
+using GraphQL.Server.Ui.Playground;
 using GraphQLWebShop.Data;
+using GraphQLWebShop.GraphQL;
+using GraphQLWebShop.Repositories;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
@@ -28,11 +33,23 @@ namespace GraphQLWebShop
             services.AddDbContext<ApplicationDbContext>(options =>
                 options.UseSqlServer(_config["ConnectionStrings:WebShop"])
             );
+            services.AddSingleton<ProductRepository>();
+
+            services.AddScoped<IDependencyResolver>(s => new FuncDependencyResolver(
+                s.GetRequiredService));
+            services.AddScoped<WebShopSchema>();
+
+            // Register all the types GraphQL uses
+            services.AddGraphQL(o => { o.ExposeExceptions = true; })
+                .AddGraphTypes(ServiceLifetime.Scoped);
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, ApplicationDbContext dbContext)
         {
+            app.UseGraphQL<WebShopSchema>();
+            app.UseGraphQLPlayground(new GraphQLPlaygroundOptions());
+            app.UseMvc();
             dbContext.Seed();
         }
     }
