@@ -1,11 +1,12 @@
 ﻿using GraphQL.Types;
 using GraphQLWebShop.Data.Entities;
+using GraphQLWebShop.Repositories;
 
 namespace GraphQLWebShop.GraphQL.Types
 {
     public class ProductType : ObjectGraphType<Product>
     {
-        public ProductType()
+        public ProductType(ProductReviewRepository reviewRepository)
         {
             Field(t => t.Id);
             Field(t => t.Name).Description("The name of the product");
@@ -16,6 +17,10 @@ namespace GraphQLWebShop.GraphQL.Types
             Field(t => t.Rating).Description("The (max 5) star customer rating.");
             Field(t => t.Stock);
             Field<ProductTypeEnumType>("Type", "The type of the product.");
+            Field<ListGraphType<ProductReviewType>>(
+                "reviews",
+                resolve: context => reviewRepository.GetForProduct(context.Source.Id)
+                );
         }
     }
 }
