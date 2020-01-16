@@ -5,43 +5,43 @@ using GraphQLWebShop.Data;
 using GraphQLWebShop.GraphQL;
 using GraphQLWebShop.Repositories;
 using Microsoft.AspNetCore.Builder;
-using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Server.Kestrel.Core;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Hosting;
 
 namespace GraphQLWebShop
 {
     public class Startup
     {
         private readonly IConfiguration _config;
-        private readonly Microsoft.AspNetCore.Hosting.IHostingEnvironment _env;
 
-        public Startup(IConfiguration config, Microsoft.AspNetCore.Hosting.IHostingEnvironment env)
+        public Startup(IConfiguration config)
         {
             _config = config;
-            _env = env;
         }
 
         // This method gets called by the runtime. Use this method to add services to the container.
         // For more information on how to configure your application, visit https://go.microsoft.com/fwlink/?LinkID=398940
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddMvc();
             services.AddDbContext<ApplicationDbContext>(options =>
                 options.UseSqlServer(_config["ConnectionStrings:WebShop"])
             );
-            services.AddSingleton<ProductRepository>();
+            services.AddScoped<ProductRepository>();
 
-            services.AddScoped<IDependencyResolver>(s => new FuncDependencyResolver(
-                s.GetRequiredService));
+            services.AddScoped<IDependencyResolver>(s => new FuncDependencyResolver(s.GetRequiredService));
             services.AddScoped<WebShopSchema>();
 
             // Register all the types GraphQL uses
             services.AddGraphQL(o => { o.ExposeExceptions = true; })
                 .AddGraphTypes(ServiceLifetime.Scoped);
+
+            // If using Kestrel:
+            services.Configure<KestrelServerOptions>(options =>
+            {
+                options.AllowSynchronousIO = true;
+            });
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -49,7 +49,7 @@ namespace GraphQLWebShop
         {
             app.UseGraphQL<WebShopSchema>();
             app.UseGraphQLPlayground(new GraphQLPlaygroundOptions());
-            app.UseMvc();
+
             dbContext.Seed();
         }
     }
