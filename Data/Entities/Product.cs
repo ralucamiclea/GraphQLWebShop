@@ -26,5 +26,6 @@ namespace GraphQLWebShop.Data.Entities
 
         [StringLength(100)]
         public string PhotoFileName { get; set; }
+        public List<ProductReview> ProductReviews { get; set; }
     }
 }

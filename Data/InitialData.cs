@@ -21,7 +21,20 @@ namespace GraphQLWebShop.Data
                     Type = ProductType.footwear,
                     Stock = 12,
                     PhotoFileName = "shutterstock_66842440.jpg",
-                    IntroducedAt = DateTimeOffset.Now.AddMonths(-1)
+                    IntroducedAt = DateTimeOffset.Now.AddMonths(-1),
+                    ProductReviews = new List<ProductReview>
+                    {
+                        new ProductReview
+                        {
+                            Title = "Crossed the Himalayas",
+                            Review = "They have absolutely no break in period."
+                        },
+                        new ProductReview
+                        {
+                            Title = "Comfortable",
+                            Review = "One of the most comfortable hiking boots available."
+                        }
+                    }
                 });
 
                 dbContext.Products.Add(new Product
@@ -33,7 +46,15 @@ namespace GraphQLWebShop.Data
                     Type = ProductType.footwear,
                     Stock = 3,
                     PhotoFileName = "shutterstock_66842440.jpg",
-                    IntroducedAt = DateTimeOffset.Now.AddMonths(-2)
+                    IntroducedAt = DateTimeOffset.Now.AddMonths(-2),
+                    ProductReviews = new List<ProductReview>
+                    {
+                        new ProductReview
+                        {
+                            Title = "Very confy",
+                            Review = "I'm in love with how nice my feet fit in these hiking boots."
+                        }
+                    }
                 });
 
                 dbContext.Products.Add(new Product
@@ -45,7 +66,15 @@ namespace GraphQLWebShop.Data
                     Type = ProductType.backpack,
                     Stock = 23,
                     PhotoFileName = "shutterstock_66842440.jpg",
-                    IntroducedAt = DateTimeOffset.Now.AddMonths(-1)
+                    IntroducedAt = DateTimeOffset.Now.AddMonths(-1),
+                    ProductReviews = new List<ProductReview>
+                    {
+                        new ProductReview
+                        {
+                            Title = "The best backpacks outthere",
+                            Review = "After buying Osprey once, you never go back."
+                        }
+                    }
                 });
 
                 dbContext.Products.Add(new Product
@@ -57,7 +86,20 @@ namespace GraphQLWebShop.Data
                     Type = ProductType.backpack,
                     Stock = 6,
                     PhotoFileName = "shutterstock_66842440.jpg",
-                    IntroducedAt = DateTimeOffset.Now.AddMonths(-5)
+                    IntroducedAt = DateTimeOffset.Now.AddMonths(-5),
+                    ProductReviews = new List<ProductReview>
+                    {
+                        new ProductReview
+                        {
+                            Title = "Perfect for one day hikes",
+                            Review = "Worth every penny. My back feels hugged when I hike with this backpack."
+                        },
+                        new ProductReview
+                        {
+                            Title = "Great backpack",
+                            Review = "It's a very nice fit, but a little pricy."
+                        }
+                    }
                 });
 
                 dbContext.Products.Add(new Product
