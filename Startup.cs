@@ -36,7 +36,8 @@ namespace GraphQLWebShop
 
             // Register all the types GraphQL uses
             services.AddGraphQL(o => { o.ExposeExceptions = true; })
-                .AddGraphTypes(ServiceLifetime.Scoped);
+                .AddGraphTypes(ServiceLifetime.Scoped)
+                .AddDataLoader();
 
             // If using Kestrel:
             services.Configure<KestrelServerOptions>(options =>

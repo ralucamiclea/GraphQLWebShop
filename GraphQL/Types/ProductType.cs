@@ -1,12 +1,14 @@
-﻿using GraphQL.Types;
+﻿using GraphQL.DataLoader;
+using GraphQL.Types;
 using GraphQLWebShop.Data.Entities;
 using GraphQLWebShop.Repositories;
+using System.Threading.Tasks;
 
 namespace GraphQLWebShop.GraphQL.Types
 {
     public class ProductType : ObjectGraphType<Product>
     {
-        public ProductType(ProductReviewRepository reviewRepository)
+        public ProductType(ProductReviewRepository reviewRepository, IDataLoaderContextAccessor dataLoaderAccessor)
         {
             Field(t => t.Id);
             Field(t => t.Name).Description("The name of the product");
@@ -19,8 +21,14 @@ namespace GraphQLWebShop.GraphQL.Types
             Field<ProductTypeEnumType>("Type", "The type of the product.");
             Field<ListGraphType<ProductReviewType>>(
                 "reviews",
-                resolve: context => reviewRepository.GetForProduct(context.Source.Id)
+                resolve: context =>
+                {
+                    var loader = dataLoaderAccessor.Context.GetOrAddCollectionBatchLoader<int, ProductReview>(
+                        "GetReviewsByProductId", reviewRepository.GetForProducts);
+                    return loader.LoadAsync(context.Source.Id); // return all reviews for current productId
+                }
                 );
         }
+
     }
 }

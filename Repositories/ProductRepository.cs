@@ -17,9 +17,9 @@ namespace GraphQLWebShop.Repositories
             _dbContext = dbContext;
         }
 
-        public Task<List<Product>> GetAll()
+        public async Task<List<Product>> GetAll()
         {
-            return _dbContext.Products.ToListAsync();
+            return await _dbContext.Products.ToListAsync();
         }
     }
 }
